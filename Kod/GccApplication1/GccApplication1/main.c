@@ -56,8 +56,8 @@ void receiveAck(){
 	rcvResponse = (uint16_t)msg[9] << 8 | (uint16_t)msg[8];
 
 	if(rcvResponse == 0x0031){
-		   
-		if(rcvParameter == 0x1012){		
+		
+		if(rcvParameter == 0x1012){
 			lcd_clrscr();
 			lcd_gotoxy(0, 0);
 			lcd_puts("Finger not");
@@ -77,7 +77,7 @@ void sendCommand(uint16_t command, uint32_t parameter){
 	cmd[0] = 0x55;
 	cmd[1] = 0xaa;
 
-	// Device ID 
+	// Device ID
 	cmd[2] = 0x01;
 	cmd[3] = 0x00;
 
@@ -116,7 +116,13 @@ void ledOff(){
 	receiveAck();
 }
 
-
+int is_enrolled(int id){
+	sendCommand(0x0021, id);
+	receiveAck();
+	
+	if(rcvResponse == 0x0030)return 1;
+	else return 0;
+}
 
 // 0 if finger not on sensor
 int isFingerPressing(){
@@ -127,10 +133,10 @@ int isFingerPressing(){
 		uint8_t temp = PIND & 0x20;
 		if(temp == 0){  // ICPCK check
 			return 1;
-		}else{
+			}else{
 			return 0;
 		}
-	}else{ 
+		}else{
 		return 0;
 	}
 }
@@ -147,8 +153,38 @@ void delete_all(){
 	
 }
 
-void identify_fingerprint(){
+int identify_fingerprint(int noMsg){
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts("Press finger");
+	while(isFingerPressing() == 0)_delay_ms(400);
+
+	sendCommand(0x0060, 1);     // Capture finger
+	receiveAck();
+
+	sendCommand(0x0051, 1);     // Identify fingerprint
+	receiveAck();
+
+	if((noMsg == 0) && (rcvResponse != 0x0030)){
+		lcd_clrscr();
+		lcd_gotoxy(0, 0);
+		lcd_puts("User is not");
+		lcd_gotoxy(0, 1);
+		lcd_puts("recognized");
+		}else if(noMsg == 0){
+		char buff[16];
+		sprintf(buff, "User %lu", rcvParameter);
+		lcd_clrscr();
+		lcd_gotoxy(0, 0);
+		lcd_puts(buff);
+		lcd_gotoxy(0, 1);
+		lcd_puts("recognized!");
+	}
 	
+	if(noMsg == 0)_delay_ms(3000);
+	
+	if(rcvResponse != 0x0030)return -1;
+	else return rcvParameter;
 }
 
 void init_fingerprint_scanner(){
@@ -176,11 +212,11 @@ int main(void)
 	PORTB = 0x0f;
 	
 	PORTD = (1 << 6);
-	DDRD = (1 << 4) | (1 << 6);						
+	DDRD = (1 << 4) | (1 << 6);
 
 	TCCR1A = (1 << COM1B1) | (1 << WGM10);
 	TCCR1B = (1 << WGM12) | (1 << CS11);
-	OCR1B = 60;	
+	OCR1B = 60;
 
 	lcd_init(LCD_DISP_ON);
 	lcd_clrscr();
@@ -188,21 +224,21 @@ int main(void)
 	UBRRH = (unsigned char)(BAUDRATE>>8);
 	UBRRL = (unsigned char)BAUDRATE;
 
-	UCSRB = (1<<RXEN)|(1<<TXEN)|(1<<RXCIE);
-	UCSRC = (1<<URSEL)|(1<<UCSZ1)|(1<<UCSZ0);
+	UCSRB = (1 << RXEN) | (1 << TXEN) | (1 << RXCIE);
+	UCSRC = (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0);
 
 	sei();
 	init_fingerprint_scanner();
 	ledOn();
 	
 	while(1){
-		if((PINB & 0x01) == 0){	
+		if((PINB & 0x01) == 0){
 			identify_fingerprint();
-		}else if((PINB & 0x02) == 0){	
+			}else if((PINB & 0x02) == 0){
 			enroll();
-		}else if((PINB & 0x04) == 0){	
+			}else if((PINB & 0x04) == 0){
 			delete_user();
-		}else if((PINB & 0x08) == 0){
+			}else if((PINB & 0x08) == 0){
 			delete_all();
 		}
 		
