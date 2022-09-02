@@ -142,7 +142,90 @@ int isFingerPressing(){
 }
 
 void enroll(){
+	// find first free ID
+	int id;
+	for(id=0; id <= 199; id++){
+		if(is_enrolled(id) == 0)break;
+	}
 	
+	if(id == 200){
+		lcd_clrscr();
+		lcd_gotoxy(0, 0);
+		lcd_puts("ERROR");
+		
+		lcd_gotoxy(0, 1);
+		lcd_puts("Storage full!");
+		_delay_ms(2000);
+		return;
+	}
+	
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts("Press finger");
+	lcd_gotoxy(0, 1);
+	lcd_puts("1/3");
+	
+	while(isFingerPressing() == 0)_delay_ms(400);
+	sendCommand(0x0022, id);    // Start enroll
+	receiveAck();
+	
+	sendCommand(0x0060, 1);     // Capture finger
+	receiveAck();
+	if(rcvResponse == 0x0031 && rcvParameter == 0x1012)return;
+
+	sendCommand(0x0023, 0);     // Enroll 1
+	receiveAck();
+	
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts("Remove finger");
+	
+	while(isFingerPressing() == 1)_delay_ms(400);
+	
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts("Press finger");
+	lcd_gotoxy(0, 1);
+	lcd_puts("2/3");
+	
+	while(isFingerPressing() == 0)_delay_ms(400);
+	
+	sendCommand(0x0060, 1);     // Capture finger
+	receiveAck();
+	if(rcvResponse == 0x0031 && rcvParameter == 0x1012)return;
+	
+	sendCommand(0x0024, 0);     // Enroll 2
+	receiveAck();
+	
+	
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts("Remove finger");
+	
+	while(isFingerPressing() == 1)_delay_ms(400);
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts("Press finger");
+	lcd_gotoxy(0, 1);
+	lcd_puts("3/3");
+
+	while(isFingerPressing() == 0)_delay_ms(400);
+	
+	sendCommand(0x0060, 1);     // Capture finger
+	receiveAck();
+	if(rcvResponse == 0x0031 && rcvParameter == 0x1012)return;
+
+	sendCommand(0x0025, 0);     // Enroll 3
+	receiveAck();
+	
+	char buff[16];
+	sprintf(buff, "User %d", id);
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts(buff);
+	lcd_gotoxy(0, 1);
+	lcd_puts("added!");
+	_delay_ms(1500);
 }
 
 void delete_user(){
