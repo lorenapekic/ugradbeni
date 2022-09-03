@@ -18,6 +18,7 @@ uint16_t rcvResponse;
 
 int rcvBufferStart=0;
 int rcvBufferEnd=0;
+char rcvBuffer[RCV_BUFFER_SIZE];
 
 
 ISR(USART_RXC_vect){
@@ -41,6 +42,9 @@ void receiveAck(){
 	for(int i=0; i < 12; i++){
 		msg[i] = rcvBuffer[rcvBufferStart];
 		rcvBufferStart++;
+		if(rcvBufferStart == RCV_BUFFER_SIZE){
+			rcvBufferStart = 0;
+		}
 		if(i <= 9)checksum = checksum + msg[i];
 	}
 
@@ -50,20 +54,20 @@ void receiveAck(){
 		// ACK Checksum Fail
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
-		lcd_puts("Error");
+		lcd_puts("Greska");
 	}
 	rcvParameter = (uint32_t)msg[4] | (uint32_t)msg[5] << 8 | (uint32_t)msg[6] << 16 | (uint32_t)msg[7] << 24;
 	rcvResponse = (uint16_t)msg[9] << 8 | (uint16_t)msg[8];
 
 	if(rcvResponse == 0x0031){
-		
+		if(rcvParameter == 0x100A) return;
 		if(rcvParameter == 0x1012){
 			lcd_clrscr();
 			lcd_gotoxy(0, 0);
-			lcd_puts("Finger not");
+			lcd_puts("Prst ne");
 			
 			lcd_gotoxy(0, 1);
-			lcd_puts("pressing");
+			lcd_puts("pritiskuje");
 			_delay_ms(1500);
 		}
 		}else if(rcvResponse == 0x0030){
@@ -151,17 +155,17 @@ void enroll(){
 	if(id == 200){
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
-		lcd_puts("ERROR");
+		lcd_puts("Greska");
 		
 		lcd_gotoxy(0, 1);
-		lcd_puts("Storage full!");
+		lcd_puts("Baza je puna");
 		_delay_ms(2000);
 		return;
 	}
 	
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Press finger");
+	lcd_puts("Pritisni prst");
 	lcd_gotoxy(0, 1);
 	lcd_puts("1/3");
 	
@@ -178,13 +182,13 @@ void enroll(){
 	
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Remove finger");
+	lcd_puts("Uklonite prst");
 	
 	while(isFingerPressing() == 1)_delay_ms(400);
 	
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Press finger");
+	lcd_puts("Pritisni prst");
 	lcd_gotoxy(0, 1);
 	lcd_puts("2/3");
 	
@@ -200,7 +204,7 @@ void enroll(){
 	
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Remove finger");
+	lcd_puts("Uklonite prst");
 	
 	while(isFingerPressing() == 1)_delay_ms(400);
 	lcd_clrscr();
@@ -219,17 +223,40 @@ void enroll(){
 	receiveAck();
 	
 	char buff[16];
-	sprintf(buff, "User %d", id);
+	sprintf(buff, "Korisnik %d", id);
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
 	lcd_puts(buff);
 	lcd_gotoxy(0, 1);
-	lcd_puts("added!");
+	lcd_puts("dodan!");
 	_delay_ms(1500);
 }
 
 void delete_user(){
-
+	int user = identify_fingerprint(1);
+	if(user == -1){
+		lcd_clrscr();
+		lcd_gotoxy(0, 0);
+		lcd_puts("Korisnik nije");
+		
+		lcd_gotoxy(0, 1);
+		lcd_puts("prepoznat");
+		_delay_ms(1500);
+		return;
+	}
+	
+	sendCommand(0x0040, user);
+	receiveAck();
+	
+	char buff[16];
+	sprintf(buff, "Korisnik %d", user);
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts(buff);
+	
+	lcd_gotoxy(0, 1);
+	lcd_puts("izbrisan");
+	_delay_ms(1500);
 }
 
 void delete_all(){
@@ -239,7 +266,7 @@ void delete_all(){
 int identify_fingerprint(int noMsg){
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Press finger");
+	lcd_puts("Pritisni prst");
 	while(isFingerPressing() == 0)_delay_ms(400);
 
 	sendCommand(0x0060, 1);     // Capture finger
@@ -251,17 +278,17 @@ int identify_fingerprint(int noMsg){
 	if((noMsg == 0) && (rcvResponse != 0x0030)){
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
-		lcd_puts("User is not");
+		lcd_puts("Korisnik nije");
 		lcd_gotoxy(0, 1);
-		lcd_puts("recognized");
+		lcd_puts("prepoznat");
 		}else if(noMsg == 0){
 		char buff[16];
-		sprintf(buff, "User %lu", rcvParameter);
+		sprintf(buff, "Korisnik %lu", rcvParameter);
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
 		lcd_puts(buff);
 		lcd_gotoxy(0, 1);
-		lcd_puts("recognized!");
+		lcd_puts("je prepoznat");
 	}
 	
 	if(noMsg == 0)_delay_ms(3000);
@@ -281,10 +308,10 @@ void init_fingerprint_scanner(){
 void message(){
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("System");
+	lcd_puts("Sustav");
 	
 	lcd_gotoxy(0, 1);
-	lcd_puts("ready!");
+	lcd_puts("pokrenut");
 }
 
 
