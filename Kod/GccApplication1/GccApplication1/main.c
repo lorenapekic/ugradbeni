@@ -1,7 +1,7 @@
 #define F_CPU 7372800UL
 #define BAUD 9600UL
 #define BAUDRATE (F_CPU/16UL/BAUD-1)
-#define RCV_BUFFER_SIZE 512  // ??
+#define RCV_BUFFER_SIZE 512 
 
 #include <avr/io.h>
 #include <stdio.h>
@@ -26,6 +26,14 @@ ISR(USART_RXC_vect){
 	rcvBufferEnd++;
 	if(rcvBufferEnd == RCV_BUFFER_SIZE){
 		rcvBufferEnd = 0;
+	}
+}
+
+int rcvBufferSize(){
+	if(rcvBufferEnd > rcvBufferStart){
+		return rcvBufferEnd - rcvBufferStart;
+		}else{
+		return RCV_BUFFER_SIZE - rcvBufferStart - rcvBufferEnd;
 	}
 }
 
