@@ -30,10 +30,10 @@ ISR(USART_RXC_vect){
 }
 
 int rcvBufferSize(){
-	if(rcvBufferEnd > rcvBufferStart){
+	if(rcvBufferEnd >= rcvBufferStart){
 		return rcvBufferEnd - rcvBufferStart;
 		}else{
-		return RCV_BUFFER_SIZE - rcvBufferStart - rcvBufferEnd;
+		return RCV_BUFFER_SIZE - rcvBufferStart + rcvBufferEnd;
 	}
 }
 
@@ -46,7 +46,11 @@ void serialSendChar(unsigned char data){
 void receiveAck(){
 	char msg[12];
 	uint16_t checksum = 0;
-
+	
+	while(rcvBufferSize() < 12){
+		_delay_ms(1);
+	}
+	
 	for(int i=0; i < 12; i++){
 		msg[i] = rcvBuffer[rcvBufferStart];
 		rcvBufferStart++;
@@ -136,6 +140,18 @@ int is_enrolled(int id){
 	else return 0;
 }
 
+void delete_all(){
+	sendCommand(0x0041, 0);
+	receiveAck();
+	
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts("Svi korisnici");
+	lcd_gotoxy(0,1);
+	lcd_puts("izbrisani");
+	_delay_ms(1500);
+}
+
 // 0 if finger not on sensor
 int isFingerPressing(){
 	sendCommand(0x0026, 0);
@@ -173,7 +189,7 @@ void enroll(){
 	
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Pritisni prst");
+	lcd_puts("Prislonite prst");
 	lcd_gotoxy(0, 1);
 	lcd_puts("1/3");
 	
@@ -196,7 +212,7 @@ void enroll(){
 	
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Pritisni prst");
+	lcd_puts("Prislonite prst");
 	lcd_gotoxy(0, 1);
 	lcd_puts("2/3");
 	
@@ -217,7 +233,7 @@ void enroll(){
 	while(isFingerPressing() == 1)_delay_ms(400);
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Press finger");
+	lcd_puts("Prislonite prst");
 	lcd_gotoxy(0, 1);
 	lcd_puts("3/3");
 
