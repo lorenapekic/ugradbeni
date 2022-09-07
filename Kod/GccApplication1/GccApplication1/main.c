@@ -32,7 +32,7 @@ ISR(USART_RXC_vect){
 int rcvBufferSize(){
 	if(rcvBufferEnd >= rcvBufferStart){
 		return rcvBufferEnd - rcvBufferStart;
-		}else{
+	}else{
 		return RCV_BUFFER_SIZE - rcvBufferStart + rcvBufferEnd;
 	}
 }
@@ -42,51 +42,6 @@ void serialSendChar(unsigned char data){
 	UDR = data;
 	while(!(UCSRA&(1 << TXC)));
 }
-
-void receiveAck(){
-	char msg[12];
-	uint16_t checksum = 0;
-	
-	while(rcvBufferSize() < 12){
-		_delay_ms(1);
-	}
-	
-	for(int i=0; i < 12; i++){
-		msg[i] = rcvBuffer[rcvBufferStart];
-		rcvBufferStart++;
-		if(rcvBufferStart == RCV_BUFFER_SIZE){
-			rcvBufferStart = 0;
-		}
-		if(i <= 9)checksum = checksum + msg[i];
-	}
-
-	if(checksum == (msg[11] << 8 | msg[10])){
-		// ACK Checksum OK
-		}else{
-		// ACK Checksum Fail
-		lcd_clrscr();
-		lcd_gotoxy(0, 0);
-		lcd_puts("Greska");
-	}
-	rcvParameter = (uint32_t)msg[4] | (uint32_t)msg[5] << 8 | (uint32_t)msg[6] << 16 | (uint32_t)msg[7] << 24;
-	rcvResponse = (uint16_t)msg[9] << 8 | (uint16_t)msg[8];
-
-	if(rcvResponse == 0x0031){
-		if(rcvParameter == 0x100A) return;
-		if(rcvParameter == 0x1012){
-			lcd_clrscr();
-			lcd_gotoxy(0, 0);
-			lcd_puts("Prst ne");
-			
-			lcd_gotoxy(0, 1);
-			lcd_puts("pritiskuje");
-			_delay_ms(1500);
-		}
-		}else if(rcvResponse == 0x0030){
-		// ACK everything good?
-	}
-}
-
 
 void sendCommand(uint16_t command, uint32_t parameter){
 	char cmd[12];
@@ -121,6 +76,49 @@ void sendCommand(uint16_t command, uint32_t parameter){
 	}
 }
 
+void receiveAck(){
+	char msg[12];
+	uint16_t checksum = 0;
+	
+	while(rcvBufferSize() < 12){
+		_delay_ms(1);
+	}
+	
+	for(int i=0; i < 12; i++){
+		msg[i] = rcvBuffer[rcvBufferStart];
+		rcvBufferStart++;
+		if(rcvBufferStart == RCV_BUFFER_SIZE){
+			rcvBufferStart = 0;
+		}
+		if(i <= 9)checksum = checksum + msg[i];
+	}
+
+	if(checksum == (msg[11] << 8 | msg[10])){
+		// ACK Checksum OK
+	}else{
+		// ACK Checksum Fail
+		lcd_clrscr();
+		lcd_gotoxy(0, 0);
+		lcd_puts("Greska");
+	}
+	rcvParameter = (uint32_t)msg[4] | (uint32_t)msg[5] << 8 | (uint32_t)msg[6] << 16 | (uint32_t)msg[7] << 24;
+	rcvResponse = (uint16_t)msg[9] << 8 | (uint16_t)msg[8];
+
+	if(rcvResponse == 0x0031){
+		if(rcvParameter == 0x100A) return;
+		if(rcvParameter == 0x1012){
+			lcd_clrscr();
+			lcd_gotoxy(0, 0);
+			lcd_puts("Prst ne");
+			
+			lcd_gotoxy(0, 1);
+			lcd_puts("pritiskuje");
+			_delay_ms(1500);
+		}
+	}else if(rcvResponse == 0x0030){
+		// ACK OK, continue
+	}
+}
 
 void ledOn(){
 	sendCommand(0x0012, 1);
@@ -161,10 +159,10 @@ int isFingerPressing(){
 		uint8_t temp = PIND & 0x20;
 		if(temp == 0){  // ICPCK check
 			return 1;
-			}else{
+		}else{
 			return 0;
 		}
-		}else{
+	}else{
 		return 0;
 	}
 }
@@ -172,11 +170,11 @@ int isFingerPressing(){
 void enroll(){
 	// find first free ID
 	int id;
-	for(id=0; id <= 199; id++){
+	for(id=0; id <= 3000; id++){
 		if(is_enrolled(id) == 0)break;
 	}
 	
-	if(id == 200){
+	if(id == 3000){
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
 		lcd_puts("Greska");
@@ -230,7 +228,7 @@ void enroll(){
 	lcd_gotoxy(0, 0);
 	lcd_puts("Uklonite prst");
 	
-	while(isFingerPressing() == 1)_delay_ms(400);
+	while(isFingerPressing() == 1) _delay_ms(400);
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
 	lcd_puts("Prislonite prst");
@@ -283,15 +281,12 @@ void delete_user(){
 	_delay_ms(1500);
 }
 
-void delete_all(){
-	
-}
 
 int identify_fingerprint(int noMsg){
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Pritisni prst");
-	while(isFingerPressing() == 0)_delay_ms(400);
+	lcd_puts("Prisloni prst");
+	while(isFingerPressing() == 0) _delay_ms(400);
 
 	sendCommand(0x0060, 1);     // Capture finger
 	receiveAck();
@@ -299,13 +294,13 @@ int identify_fingerprint(int noMsg){
 	sendCommand(0x0051, 1);     // Identify fingerprint
 	receiveAck();
 
-	if((noMsg == 0) && (rcvResponse != 0x0030)){
+	if((noMsg == 0) && (rcvResponse != 48)){
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
 		lcd_puts("Korisnik nije");
 		lcd_gotoxy(0, 1);
 		lcd_puts("prepoznat");
-		}else if(noMsg == 0){
+	}else if(noMsg == 0){
 		char buff[16];
 		sprintf(buff, "Korisnik %lu", rcvParameter);
 		lcd_clrscr();
@@ -315,9 +310,9 @@ int identify_fingerprint(int noMsg){
 		lcd_puts("je prepoznat");
 	}
 	
-	if(noMsg == 0)_delay_ms(3000);
+	if(noMsg == 0) _delay_ms(3000);
 	
-	if(rcvResponse != 0x0030)return -1;
+	if(rcvResponse != 0x0030) return -1;
 	else return rcvParameter;
 }
 
