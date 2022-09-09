@@ -1334,7 +1334,6 @@ static inline void _delayFourCycles(unsigned int __count)
 
 
 
-
 void message(){
 	lcd_clrscr();
      a8e:	0e 94 a5 00 	call	0x14a	; 0x14a <lcd_clrscr>
@@ -1358,7 +1357,7 @@ void message(){
      ab2:	08 95       	ret
 
 00000ab4 <main>:
-
+}
 
 
 int main(void)

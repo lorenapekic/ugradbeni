@@ -390,7 +390,6 @@ void play_game(){
 
 
 
-
 void message(){
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
@@ -399,41 +398,6 @@ void message(){
 	lcd_gotoxy(0, 1);
 	lcd_puts("pokrenut");
 }
-
-
-void playGame(){
-	lcd_clrscr();
-	int p1_id = -1;
-	int p2_id = -1;
-	int p1_score = 0;
-	int p2_score = 0;
-	
-	lcd_puts("Player 1 id");
-	while (p1_id == -1) {
-		p1_id = identify_fingerprint();		
-	}
-	
-	lcd_puts("Player 2 id");
-	while (p2_id == -1) {
-		p2_id = identify_fingerprint();
-	}
-	
-	lcd_puts("Player 1 play");
-	//Muscle sensor
-	//Ocitavati vrijednost mišiæa kroz period od 5-10 sekundi i spremiti najvišu vrijednost u p1_score
-	
-	lcd_puts("Player 2 play");
-	//Ista stvar za p2_score
-	
-	if (p1_score > p2_score) {
-		lcd_puts("Player 1 win");
-	} else {
-		lcd_puts("Player 2 win");
-	}
-	_delay_ms(5000);	
-	return;	
-}
-
 
 
 int main(void)
@@ -463,8 +427,7 @@ int main(void)
 	
 	while(1){
 		if((PINB & 0x01) == 0){
-			identify_fingerprint(0);
-			//play_game();
+			play_game();
 			}else if((PINB & 0x02) == 0){
 			enroll();
 			}else if((PINB & 0x04) == 0){
