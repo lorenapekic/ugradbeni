@@ -130,14 +130,6 @@ void ledOff(){
 	receiveAck();
 }
 
-int is_enrolled(int id){
-	sendCommand(0x0021, id);
-	receiveAck();
-	
-	if(rcvResponse == 0x0030)return 1;
-	else return 0;
-}
-
 void delete_all(){
 	sendCommand(0x0041, 0);
 	receiveAck();
@@ -149,6 +141,19 @@ void delete_all(){
 	lcd_puts("izbrisani");
 	_delay_ms(1500);
 }
+
+int is_enrolled(int id){
+	sendCommand(0x0021, id);
+	receiveAck();
+	
+	if(rcvResponse == 0x0030){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+
+
 
 // 0 if finger not on sensor
 int isFingerPressing(){
@@ -170,8 +175,8 @@ int isFingerPressing(){
 void enroll(){
 	// find first free ID
 	int id;
-	for(id=0; id <= 3000; id++){
-		if(is_enrolled(id) == 0)break;
+	for(id=0; id <= 2999; id++){
+		if(is_enrolled(id) == 0) break;
 	}
 	
 	if(id == 3000){
@@ -254,33 +259,6 @@ void enroll(){
 	_delay_ms(1500);
 }
 
-void delete_user(){
-	int user = identify_fingerprint(1);
-	if(user == -1){
-		lcd_clrscr();
-		lcd_gotoxy(0, 0);
-		lcd_puts("Korisnik nije");
-		
-		lcd_gotoxy(0, 1);
-		lcd_puts("prepoznat");
-		_delay_ms(1500);
-		return;
-	}
-	
-	sendCommand(0x0040, user);
-	receiveAck();
-	
-	char buff[16];
-	sprintf(buff, "Korisnik %d", user);
-	lcd_clrscr();
-	lcd_gotoxy(0, 0);
-	lcd_puts(buff);
-	
-	lcd_gotoxy(0, 1);
-	lcd_puts("izbrisan");
-	_delay_ms(1500);
-}
-
 
 int identify_fingerprint(int noMsg){
 	lcd_clrscr();
@@ -316,12 +294,101 @@ int identify_fingerprint(int noMsg){
 	else return rcvParameter;
 }
 
+void delete_user(){
+	int user = identify_fingerprint(1);
+	if(user == -1){
+		lcd_clrscr();
+		lcd_gotoxy(0, 0);
+		lcd_puts("Korisnik nije");
+		
+		lcd_gotoxy(0, 1);
+		lcd_puts("prepoznat");
+		_delay_ms(1500);
+		return;
+	}
+	
+	sendCommand(0x0040, user);
+	receiveAck();
+	
+	char buff[16];
+	sprintf(buff, "Korisnik %d", user);
+	lcd_clrscr();
+	lcd_gotoxy(0, 0);
+	lcd_puts(buff);
+	
+	lcd_gotoxy(0, 1);
+	lcd_puts("izbrisan");
+	_delay_ms(1500);
+}
+
+char muscle_sensor(){
+	ADCSRA |= (1 << ADSC);
+	while (!(ADCSRA & (1 << ADIF)));
+	_delay_ms(400);
+	return ADC;
+}
+
 void init_fingerprint_scanner(){
 	_delay_ms(100);
 	sendCommand(0x0001, 0);
 	_delay_ms(100);
 	receiveAck();
 }
+
+
+void init_adc() {
+	ADMUX = (1 << REFS0) | (1 << MUX2);
+	ADCSRA = (1 << ADEN) | (1 << ADPS1) | (1 << ADPS0);
+}
+
+
+void play_game(){
+	lcd_clrscr();
+	init_adc();
+	lcd_gotoxy(0,0);
+	lcd_puts("Registriraj se");
+	lcd_gotoxy(0,1);
+	lcd_puts("da bi igrao");
+	_delay_ms(5000);
+	
+	int p1_id = -1;
+	int p2_id = -1;
+	int p1_score = 0;
+	int p2_score = 0;
+	lcd_clrscr();
+	lcd_puts("Igrac 1 id");
+	while (p1_id == -1) {
+		p1_id = identify_fingerprint(1);
+	}
+	lcd_clrscr();
+	lcd_puts("Igrac 2 id");
+	while (p2_id == -1) {
+		p2_id = identify_fingerprint(1);
+	}
+	lcd_clrscr();
+	lcd_puts("Igrac 1 igraj");
+	_delay_ms(3000);
+	while(p1_score == 0){
+		p1_score = muscle_sensor();
+	}
+	
+	lcd_clrscr();
+	lcd_puts("Igrac 2 igraj");
+	while(p2_score == 0){
+		p2_score = muscle_sensor();
+	}
+	_delay_ms(3000);
+	
+	if (p1_score > p2_score) {
+		lcd_puts("Igrac 1 pobjedio");
+		} else {
+		lcd_puts("Igrac 2 pobjedio");
+	}
+	_delay_ms(5000);
+	return;
+}
+
+
 
 
 void message(){
@@ -362,7 +429,8 @@ int main(void)
 	
 	while(1){
 		if((PINB & 0x01) == 0){
-			identify_fingerprint();
+			identify_fingerprint(0);
+			//play_game();
 			}else if((PINB & 0x02) == 0){
 			enroll();
 			}else if((PINB & 0x04) == 0){
