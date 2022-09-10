@@ -5,29 +5,29 @@ Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
   0 .text         0000110e  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         0000013a  00800060  0000110e  000011a2  2**0
+  1 .data         0000013e  00800060  0000110e  000011a2  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000020a  0080019a  0080019a  000012dc  2**0
+  2 .bss          0000020a  0080019e  0080019e  000012e0  2**0
                   ALLOC
-  3 .comment      0000005c  00000000  00000000  000012dc  2**0
+  3 .comment      0000005c  00000000  00000000  000012e0  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00001338  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000133c  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000138  00000000  00000000  00001374  2**0
+  5 .debug_aranges 00000138  00000000  00000000  00001378  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000020df  00000000  00000000  000014ac  2**0
+  6 .debug_info   00002158  00000000  00000000  000014b0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000a71  00000000  00000000  0000358b  2**0
+  7 .debug_abbrev 00000a62  00000000  00000000  00003608  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000dd3  00000000  00000000  00003ffc  2**0
+  8 .debug_line   00000df1  00000000  00000000  0000406a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000033c  00000000  00000000  00004dd0  2**2
+  9 .debug_frame  00000344  00000000  00000000  00004e5c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000005f9  00000000  00000000  0000510c  2**0
+ 10 .debug_str    000005f9  00000000  00000000  000051a0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000fc2  00000000  00000000  00005705  2**0
+ 11 .debug_loc    00000fcc  00000000  00000000  00005799  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000130  00000000  00000000  000066c7  2**0
+ 12 .debug_ranges 00000130  00000000  00000000  00006765  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -72,13 +72,13 @@ Disassembly of section .text:
       6a:	02 c0       	rjmp	.+4      	; 0x70 <__do_copy_data+0x10>
       6c:	05 90       	lpm	r0, Z+
       6e:	0d 92       	st	X+, r0
-      70:	aa 39       	cpi	r26, 0x9A	; 154
+      70:	ae 39       	cpi	r26, 0x9E	; 158
       72:	b1 07       	cpc	r27, r17
       74:	d9 f7       	brne	.-10     	; 0x6c <__do_copy_data+0xc>
 
 00000076 <__do_clear_bss>:
       76:	23 e0       	ldi	r18, 0x03	; 3
-      78:	aa e9       	ldi	r26, 0x9A	; 154
+      78:	ae e9       	ldi	r26, 0x9E	; 158
       7a:	b1 e0       	ldi	r27, 0x01	; 1
       7c:	01 c0       	rjmp	.+2      	; 0x80 <.do_clear_bss_start>
 
@@ -86,7 +86,7 @@ Disassembly of section .text:
       7e:	1d 92       	st	X+, r1
 
 00000080 <.do_clear_bss_start>:
-      80:	a4 3a       	cpi	r26, 0xA4	; 164
+      80:	a8 3a       	cpi	r26, 0xA8	; 168
       82:	b2 07       	cpc	r27, r18
       84:	e1 f7       	brne	.-8      	; 0x7e <.do_clear_bss_loop>
       86:	0e 94 5a 05 	call	0xab4	; 0xab4 <main>
@@ -391,11 +391,11 @@ static inline void _delayFourCycles(unsigned int __count)
      21c:	9f 93       	push	r25
      21e:	ef 93       	push	r30
      220:	ff 93       	push	r31
-     222:	80 91 9a 01 	lds	r24, 0x019A	; 0x80019a <__data_end>
-     226:	90 91 9b 01 	lds	r25, 0x019B	; 0x80019b <__data_end+0x1>
+     222:	80 91 9e 01 	lds	r24, 0x019E	; 0x80019e <__data_end>
+     226:	90 91 9f 01 	lds	r25, 0x019F	; 0x80019f <__data_end+0x1>
      22a:	2c b1       	in	r18, 0x0c	; 12
      22c:	fc 01       	movw	r30, r24
-     22e:	e0 56       	subi	r30, 0x60	; 96
+     22e:	ec 55       	subi	r30, 0x5C	; 92
      230:	fe 4f       	sbci	r31, 0xFE	; 254
      232:	20 83       	st	Z, r18
      234:	01 96       	adiw	r24, 0x01	; 1
@@ -403,11 +403,11 @@ static inline void _delayFourCycles(unsigned int __count)
      238:	22 e0       	ldi	r18, 0x02	; 2
      23a:	92 07       	cpc	r25, r18
      23c:	29 f0       	breq	.+10     	; 0x248 <__vector_11+0x3a>
-     23e:	90 93 9b 01 	sts	0x019B, r25	; 0x80019b <__data_end+0x1>
-     242:	80 93 9a 01 	sts	0x019A, r24	; 0x80019a <__data_end>
+     23e:	90 93 9f 01 	sts	0x019F, r25	; 0x80019f <__data_end+0x1>
+     242:	80 93 9e 01 	sts	0x019E, r24	; 0x80019e <__data_end>
      246:	04 c0       	rjmp	.+8      	; 0x250 <__vector_11+0x42>
-     248:	10 92 9b 01 	sts	0x019B, r1	; 0x80019b <__data_end+0x1>
-     24c:	10 92 9a 01 	sts	0x019A, r1	; 0x80019a <__data_end>
+     248:	10 92 9f 01 	sts	0x019F, r1	; 0x80019f <__data_end+0x1>
+     24c:	10 92 9e 01 	sts	0x019E, r1	; 0x80019e <__data_end>
      250:	ff 91       	pop	r31
      252:	ef 91       	pop	r30
      254:	9f 91       	pop	r25
@@ -420,10 +420,10 @@ static inline void _delayFourCycles(unsigned int __count)
      262:	18 95       	reti
 
 00000264 <rcvBufferSize>:
-     264:	80 91 9a 01 	lds	r24, 0x019A	; 0x80019a <__data_end>
-     268:	90 91 9b 01 	lds	r25, 0x019B	; 0x80019b <__data_end+0x1>
-     26c:	20 91 9c 01 	lds	r18, 0x019C	; 0x80019c <rcvBufferStart>
-     270:	30 91 9d 01 	lds	r19, 0x019D	; 0x80019d <rcvBufferStart+0x1>
+     264:	80 91 9e 01 	lds	r24, 0x019E	; 0x80019e <__data_end>
+     268:	90 91 9f 01 	lds	r25, 0x019F	; 0x80019f <__data_end+0x1>
+     26c:	20 91 a0 01 	lds	r18, 0x01A0	; 0x8001a0 <rcvBufferStart>
+     270:	30 91 a1 01 	lds	r19, 0x01A1	; 0x8001a1 <rcvBufferStart+0x1>
      274:	82 17       	cp	r24, r18
      276:	93 07       	cpc	r25, r19
      278:	1c f0       	brlt	.+6      	; 0x280 <rcvBufferSize+0x1c>
@@ -532,8 +532,8 @@ static inline void _delayFourCycles(unsigned int __count)
      33c:	0e 94 32 01 	call	0x264	; 0x264 <rcvBufferSize>
      340:	0c 97       	sbiw	r24, 0x0c	; 12
      342:	c4 f3       	brlt	.-16     	; 0x334 <receiveAck+0x16>
-     344:	80 91 9c 01 	lds	r24, 0x019C	; 0x80019c <rcvBufferStart>
-     348:	90 91 9d 01 	lds	r25, 0x019D	; 0x80019d <rcvBufferStart+0x1>
+     344:	80 91 a0 01 	lds	r24, 0x01A0	; 0x8001a0 <rcvBufferStart>
+     348:	90 91 a1 01 	lds	r25, 0x01A1	; 0x8001a1 <rcvBufferStart+0x1>
      34c:	fe 01       	movw	r30, r28
      34e:	31 96       	adiw	r30, 0x01	; 1
      350:	20 e0       	ldi	r18, 0x00	; 0
@@ -541,7 +541,7 @@ static inline void _delayFourCycles(unsigned int __count)
      354:	60 e0       	ldi	r22, 0x00	; 0
      356:	70 e0       	ldi	r23, 0x00	; 0
      358:	dc 01       	movw	r26, r24
-     35a:	a0 56       	subi	r26, 0x60	; 96
+     35a:	ac 55       	subi	r26, 0x5C	; 92
      35c:	be 4f       	sbci	r27, 0xFE	; 254
      35e:	4c 91       	ld	r20, X
      360:	41 93       	st	Z+, r20
@@ -562,8 +562,8 @@ static inline void _delayFourCycles(unsigned int __count)
      37e:	2c 30       	cpi	r18, 0x0C	; 12
      380:	31 05       	cpc	r19, r1
      382:	51 f7       	brne	.-44     	; 0x358 <receiveAck+0x3a>
-     384:	90 93 9d 01 	sts	0x019D, r25	; 0x80019d <rcvBufferStart+0x1>
-     388:	80 93 9c 01 	sts	0x019C, r24	; 0x80019c <rcvBufferStart>
+     384:	90 93 a1 01 	sts	0x01A1, r25	; 0x8001a1 <rcvBufferStart+0x1>
+     388:	80 93 a0 01 	sts	0x01A0, r24	; 0x8001a0 <rcvBufferStart>
      38c:	8c 85       	ldd	r24, Y+12	; 0x0c
      38e:	90 e0       	ldi	r25, 0x00	; 0
      390:	98 2f       	mov	r25, r24
@@ -593,18 +593,18 @@ static inline void _delayFourCycles(unsigned int __count)
      3c6:	82 2b       	or	r24, r18
      3c8:	28 85       	ldd	r18, Y+8	; 0x08
      3ca:	b2 2b       	or	r27, r18
-     3cc:	80 93 a0 03 	sts	0x03A0, r24	; 0x8003a0 <rcvParameter>
-     3d0:	90 93 a1 03 	sts	0x03A1, r25	; 0x8003a1 <rcvParameter+0x1>
-     3d4:	a0 93 a2 03 	sts	0x03A2, r26	; 0x8003a2 <rcvParameter+0x2>
-     3d8:	b0 93 a3 03 	sts	0x03A3, r27	; 0x8003a3 <rcvParameter+0x3>
+     3cc:	80 93 a4 03 	sts	0x03A4, r24	; 0x8003a4 <rcvParameter>
+     3d0:	90 93 a5 03 	sts	0x03A5, r25	; 0x8003a5 <rcvParameter+0x1>
+     3d4:	a0 93 a6 03 	sts	0x03A6, r26	; 0x8003a6 <rcvParameter+0x2>
+     3d8:	b0 93 a7 03 	sts	0x03A7, r27	; 0x8003a7 <rcvParameter+0x3>
      3dc:	2a 85       	ldd	r18, Y+10	; 0x0a
      3de:	30 e0       	ldi	r19, 0x00	; 0
      3e0:	32 2f       	mov	r19, r18
      3e2:	22 27       	eor	r18, r18
      3e4:	49 85       	ldd	r20, Y+9	; 0x09
      3e6:	24 2b       	or	r18, r20
-     3e8:	30 93 9f 01 	sts	0x019F, r19	; 0x80019f <rcvResponse+0x1>
-     3ec:	20 93 9e 01 	sts	0x019E, r18	; 0x80019e <rcvResponse>
+     3e8:	30 93 a3 01 	sts	0x01A3, r19	; 0x8001a3 <rcvResponse+0x1>
+     3ec:	20 93 a2 01 	sts	0x01A2, r18	; 0x8001a2 <rcvResponse>
      3f0:	21 33       	cpi	r18, 0x31	; 49
      3f2:	31 05       	cpc	r19, r1
      3f4:	31 f5       	brne	.+76     	; 0x442 <__DATA_REGION_LENGTH__+0x42>
@@ -705,8 +705,8 @@ static inline void _delayFourCycles(unsigned int __count)
      4c4:	0e 94 8f 01 	call	0x31e	; 0x31e <receiveAck>
      4c8:	81 e0       	ldi	r24, 0x01	; 1
      4ca:	90 e0       	ldi	r25, 0x00	; 0
-     4cc:	20 91 9e 01 	lds	r18, 0x019E	; 0x80019e <rcvResponse>
-     4d0:	30 91 9f 01 	lds	r19, 0x019F	; 0x80019f <rcvResponse+0x1>
+     4cc:	20 91 a2 01 	lds	r18, 0x01A2	; 0x8001a2 <rcvResponse>
+     4d0:	30 91 a3 01 	lds	r19, 0x01A3	; 0x8001a3 <rcvResponse+0x1>
      4d4:	20 33       	cpi	r18, 0x30	; 48
      4d6:	31 05       	cpc	r19, r1
      4d8:	11 f0       	breq	.+4      	; 0x4de <is_enrolled+0x2a>
@@ -722,10 +722,10 @@ static inline void _delayFourCycles(unsigned int __count)
      4e8:	90 e0       	ldi	r25, 0x00	; 0
      4ea:	0e 94 4a 01 	call	0x294	; 0x294 <sendCommand>
      4ee:	0e 94 8f 01 	call	0x31e	; 0x31e <receiveAck>
-     4f2:	80 91 a0 03 	lds	r24, 0x03A0	; 0x8003a0 <rcvParameter>
-     4f6:	90 91 a1 03 	lds	r25, 0x03A1	; 0x8003a1 <rcvParameter+0x1>
-     4fa:	a0 91 a2 03 	lds	r26, 0x03A2	; 0x8003a2 <rcvParameter+0x2>
-     4fe:	b0 91 a3 03 	lds	r27, 0x03A3	; 0x8003a3 <rcvParameter+0x3>
+     4f2:	80 91 a4 03 	lds	r24, 0x03A4	; 0x8003a4 <rcvParameter>
+     4f6:	90 91 a5 03 	lds	r25, 0x03A5	; 0x8003a5 <rcvParameter+0x1>
+     4fa:	a0 91 a6 03 	lds	r26, 0x03A6	; 0x8003a6 <rcvParameter+0x2>
+     4fe:	b0 91 a7 03 	lds	r27, 0x03A7	; 0x8003a7 <rcvParameter+0x3>
      502:	89 2b       	or	r24, r25
      504:	8a 2b       	or	r24, r26
      506:	8b 2b       	or	r24, r27
@@ -764,13 +764,13 @@ static inline void _delayFourCycles(unsigned int __count)
      546:	39 f0       	breq	.+14     	; 0x556 <enroll+0x34>
      548:	0f 5f       	subi	r16, 0xFF	; 255
      54a:	1f 4f       	sbci	r17, 0xFF	; 255
-     54c:	08 3b       	cpi	r16, 0xB8	; 184
-     54e:	2b e0       	ldi	r18, 0x0B	; 11
+     54c:	0c 32       	cpi	r16, 0x2C	; 44
+     54e:	21 e0       	ldi	r18, 0x01	; 1
      550:	12 07       	cpc	r17, r18
      552:	a9 f7       	brne	.-22     	; 0x53e <enroll+0x1c>
      554:	04 c0       	rjmp	.+8      	; 0x55e <enroll+0x3c>
-     556:	08 3b       	cpi	r16, 0xB8	; 184
-     558:	8b e0       	ldi	r24, 0x0B	; 11
+     556:	0c 32       	cpi	r16, 0x2C	; 44
+     558:	81 e0       	ldi	r24, 0x01	; 1
      55a:	18 07       	cpc	r17, r24
      55c:	e1 f4       	brne	.+56     	; 0x596 <enroll+0x74>
      55e:	0e 94 a5 00 	call	0x14a	; 0x14a <lcd_clrscr>
@@ -839,14 +839,14 @@ static inline void _delayFourCycles(unsigned int __count)
      5f6:	90 e0       	ldi	r25, 0x00	; 0
      5f8:	0e 94 4a 01 	call	0x294	; 0x294 <sendCommand>
      5fc:	0e 94 8f 01 	call	0x31e	; 0x31e <receiveAck>
-     600:	80 91 9e 01 	lds	r24, 0x019E	; 0x80019e <rcvResponse>
-     604:	90 91 9f 01 	lds	r25, 0x019F	; 0x80019f <rcvResponse+0x1>
+     600:	80 91 a2 01 	lds	r24, 0x01A2	; 0x8001a2 <rcvResponse>
+     604:	90 91 a3 01 	lds	r25, 0x01A3	; 0x8001a3 <rcvResponse+0x1>
      608:	c1 97       	sbiw	r24, 0x31	; 49
      60a:	71 f4       	brne	.+28     	; 0x628 <enroll+0x106>
-     60c:	80 91 a0 03 	lds	r24, 0x03A0	; 0x8003a0 <rcvParameter>
-     610:	90 91 a1 03 	lds	r25, 0x03A1	; 0x8003a1 <rcvParameter+0x1>
-     614:	a0 91 a2 03 	lds	r26, 0x03A2	; 0x8003a2 <rcvParameter+0x2>
-     618:	b0 91 a3 03 	lds	r27, 0x03A3	; 0x8003a3 <rcvParameter+0x3>
+     60c:	80 91 a4 03 	lds	r24, 0x03A4	; 0x8003a4 <rcvParameter>
+     610:	90 91 a5 03 	lds	r25, 0x03A5	; 0x8003a5 <rcvParameter+0x1>
+     614:	a0 91 a6 03 	lds	r26, 0x03A6	; 0x8003a6 <rcvParameter+0x2>
+     618:	b0 91 a7 03 	lds	r27, 0x03A7	; 0x8003a7 <rcvParameter+0x3>
      61c:	82 31       	cpi	r24, 0x12	; 18
      61e:	90 41       	sbci	r25, 0x10	; 16
      620:	a1 05       	cpc	r26, r1
@@ -914,14 +914,14 @@ static inline void _delayFourCycles(unsigned int __count)
      6b4:	90 e0       	ldi	r25, 0x00	; 0
      6b6:	0e 94 4a 01 	call	0x294	; 0x294 <sendCommand>
      6ba:	0e 94 8f 01 	call	0x31e	; 0x31e <receiveAck>
-     6be:	80 91 9e 01 	lds	r24, 0x019E	; 0x80019e <rcvResponse>
-     6c2:	90 91 9f 01 	lds	r25, 0x019F	; 0x80019f <rcvResponse+0x1>
+     6be:	80 91 a2 01 	lds	r24, 0x01A2	; 0x8001a2 <rcvResponse>
+     6c2:	90 91 a3 01 	lds	r25, 0x01A3	; 0x8001a3 <rcvResponse+0x1>
      6c6:	c1 97       	sbiw	r24, 0x31	; 49
      6c8:	71 f4       	brne	.+28     	; 0x6e6 <enroll+0x1c4>
-     6ca:	80 91 a0 03 	lds	r24, 0x03A0	; 0x8003a0 <rcvParameter>
-     6ce:	90 91 a1 03 	lds	r25, 0x03A1	; 0x8003a1 <rcvParameter+0x1>
-     6d2:	a0 91 a2 03 	lds	r26, 0x03A2	; 0x8003a2 <rcvParameter+0x2>
-     6d6:	b0 91 a3 03 	lds	r27, 0x03A3	; 0x8003a3 <rcvParameter+0x3>
+     6ca:	80 91 a4 03 	lds	r24, 0x03A4	; 0x8003a4 <rcvParameter>
+     6ce:	90 91 a5 03 	lds	r25, 0x03A5	; 0x8003a5 <rcvParameter+0x1>
+     6d2:	a0 91 a6 03 	lds	r26, 0x03A6	; 0x8003a6 <rcvParameter+0x2>
+     6d6:	b0 91 a7 03 	lds	r27, 0x03A7	; 0x8003a7 <rcvParameter+0x3>
      6da:	82 31       	cpi	r24, 0x12	; 18
      6dc:	90 41       	sbci	r25, 0x10	; 16
      6de:	a1 05       	cpc	r26, r1
@@ -989,14 +989,14 @@ static inline void _delayFourCycles(unsigned int __count)
      772:	90 e0       	ldi	r25, 0x00	; 0
      774:	0e 94 4a 01 	call	0x294	; 0x294 <sendCommand>
      778:	0e 94 8f 01 	call	0x31e	; 0x31e <receiveAck>
-     77c:	80 91 9e 01 	lds	r24, 0x019E	; 0x80019e <rcvResponse>
-     780:	90 91 9f 01 	lds	r25, 0x019F	; 0x80019f <rcvResponse+0x1>
+     77c:	80 91 a2 01 	lds	r24, 0x01A2	; 0x8001a2 <rcvResponse>
+     780:	90 91 a3 01 	lds	r25, 0x01A3	; 0x8001a3 <rcvResponse+0x1>
      784:	c1 97       	sbiw	r24, 0x31	; 49
      786:	69 f4       	brne	.+26     	; 0x7a2 <enroll+0x280>
-     788:	80 91 a0 03 	lds	r24, 0x03A0	; 0x8003a0 <rcvParameter>
-     78c:	90 91 a1 03 	lds	r25, 0x03A1	; 0x8003a1 <rcvParameter+0x1>
-     790:	a0 91 a2 03 	lds	r26, 0x03A2	; 0x8003a2 <rcvParameter+0x2>
-     794:	b0 91 a3 03 	lds	r27, 0x03A3	; 0x8003a3 <rcvParameter+0x3>
+     788:	80 91 a4 03 	lds	r24, 0x03A4	; 0x8003a4 <rcvParameter>
+     78c:	90 91 a5 03 	lds	r25, 0x03A5	; 0x8003a5 <rcvParameter+0x1>
+     790:	a0 91 a6 03 	lds	r26, 0x03A6	; 0x8003a6 <rcvParameter+0x2>
+     794:	b0 91 a7 03 	lds	r27, 0x03A7	; 0x8003a7 <rcvParameter+0x3>
      798:	82 31       	cpi	r24, 0x12	; 18
      79a:	90 41       	sbci	r25, 0x10	; 16
      79c:	a1 05       	cpc	r26, r1
@@ -1113,10 +1113,10 @@ static inline void _delayFourCycles(unsigned int __count)
      896:	01 2b       	or	r16, r17
      898:	09 f0       	breq	.+2      	; 0x89c <identify_fingerprint+0x78>
      89a:	47 c0       	rjmp	.+142    	; 0x92a <identify_fingerprint+0x106>
-     89c:	80 91 9e 01 	lds	r24, 0x019E	; 0x80019e <rcvResponse>
-     8a0:	90 91 9f 01 	lds	r25, 0x019F	; 0x80019f <rcvResponse+0x1>
-     8a4:	c0 97       	sbiw	r24, 0x30	; 48
-     8a6:	99 f0       	breq	.+38     	; 0x8ce <identify_fingerprint+0xaa>
+     89c:	80 91 a2 01 	lds	r24, 0x01A2	; 0x8001a2 <rcvResponse>
+     8a0:	90 91 a3 01 	lds	r25, 0x01A3	; 0x8001a3 <rcvResponse+0x1>
+     8a4:	c1 97       	sbiw	r24, 0x31	; 49
+     8a6:	99 f4       	brne	.+38     	; 0x8ce <identify_fingerprint+0xaa>
      8a8:	0e 94 a5 00 	call	0x14a	; 0x14a <lcd_clrscr>
      8ac:	60 e0       	ldi	r22, 0x00	; 0
      8ae:	80 e0       	ldi	r24, 0x00	; 0
@@ -1131,13 +1131,13 @@ static inline void _delayFourCycles(unsigned int __count)
      8c6:	91 e0       	ldi	r25, 0x01	; 1
      8c8:	0e 94 be 00 	call	0x17c	; 0x17c <lcd_puts>
      8cc:	3c c0       	rjmp	.+120    	; 0x946 <identify_fingerprint+0x122>
-     8ce:	80 91 a3 03 	lds	r24, 0x03A3	; 0x8003a3 <rcvParameter+0x3>
+     8ce:	80 91 a7 03 	lds	r24, 0x03A7	; 0x8003a7 <rcvParameter+0x3>
      8d2:	8f 93       	push	r24
-     8d4:	80 91 a2 03 	lds	r24, 0x03A2	; 0x8003a2 <rcvParameter+0x2>
+     8d4:	80 91 a6 03 	lds	r24, 0x03A6	; 0x8003a6 <rcvParameter+0x2>
      8d8:	8f 93       	push	r24
-     8da:	80 91 a1 03 	lds	r24, 0x03A1	; 0x8003a1 <rcvParameter+0x1>
+     8da:	80 91 a5 03 	lds	r24, 0x03A5	; 0x8003a5 <rcvParameter+0x1>
      8de:	8f 93       	push	r24
-     8e0:	80 91 a0 03 	lds	r24, 0x03A0	; 0x8003a0 <rcvParameter>
+     8e0:	80 91 a4 03 	lds	r24, 0x03A4	; 0x8003a4 <rcvParameter>
      8e4:	8f 93       	push	r24
      8e6:	88 ef       	ldi	r24, 0xF8	; 248
      8e8:	90 e0       	ldi	r25, 0x00	; 0
@@ -1167,12 +1167,12 @@ static inline void _delayFourCycles(unsigned int __count)
      924:	0f be       	out	0x3f, r0	; 63
      926:	cd bf       	out	0x3d, r28	; 61
      928:	0e c0       	rjmp	.+28     	; 0x946 <identify_fingerprint+0x122>
-     92a:	80 91 9e 01 	lds	r24, 0x019E	; 0x80019e <rcvResponse>
-     92e:	90 91 9f 01 	lds	r25, 0x019F	; 0x80019f <rcvResponse+0x1>
-     932:	c0 97       	sbiw	r24, 0x30	; 48
-     934:	29 f4       	brne	.+10     	; 0x940 <identify_fingerprint+0x11c>
-     936:	80 91 a0 03 	lds	r24, 0x03A0	; 0x8003a0 <rcvParameter>
-     93a:	90 91 a1 03 	lds	r25, 0x03A1	; 0x8003a1 <rcvParameter+0x1>
+     92a:	80 91 a2 01 	lds	r24, 0x01A2	; 0x8001a2 <rcvResponse>
+     92e:	90 91 a3 01 	lds	r25, 0x01A3	; 0x8001a3 <rcvResponse+0x1>
+     932:	c1 97       	sbiw	r24, 0x31	; 49
+     934:	29 f0       	breq	.+10     	; 0x940 <identify_fingerprint+0x11c>
+     936:	80 91 a4 03 	lds	r24, 0x03A4	; 0x8003a4 <rcvParameter>
+     93a:	90 91 a5 03 	lds	r25, 0x03A5	; 0x8003a5 <rcvParameter+0x1>
      93e:	0d c0       	rjmp	.+26     	; 0x95a <identify_fingerprint+0x136>
      940:	8f ef       	ldi	r24, 0xFF	; 255
      942:	9f ef       	ldi	r25, 0xFF	; 255
@@ -1342,7 +1342,7 @@ void message(){
      a94:	80 e0       	ldi	r24, 0x00	; 0
      a96:	0e 94 9b 00 	call	0x136	; 0x136 <lcd_gotoxy>
 	lcd_puts("Sustav");
-     a9a:	8a e8       	ldi	r24, 0x8A	; 138
+     a9a:	8e e8       	ldi	r24, 0x8E	; 142
      a9c:	91 e0       	ldi	r25, 0x01	; 1
      a9e:	0e 94 be 00 	call	0x17c	; 0x17c <lcd_puts>
 	
@@ -1351,7 +1351,7 @@ void message(){
      aa4:	80 e0       	ldi	r24, 0x00	; 0
      aa6:	0e 94 9b 00 	call	0x136	; 0x136 <lcd_gotoxy>
 	lcd_puts("pokrenut");
-     aaa:	81 e9       	ldi	r24, 0x91	; 145
+     aaa:	85 e9       	ldi	r24, 0x95	; 149
      aac:	91 e0       	ldi	r25, 0x01	; 1
      aae:	0e 94 be 00 	call	0x17c	; 0x17c <lcd_puts>
      ab2:	08 95       	ret
@@ -1418,12 +1418,12 @@ int main(void)
 		if((PINB & 0x01) == 0){
      af6:	b0 99       	sbic	0x16, 0	; 22
      af8:	05 c0       	rjmp	.+10     	; 0xb04 <main+0x50>
+			//play_game();
 			identify_fingerprint(0);
      afa:	80 e0       	ldi	r24, 0x00	; 0
      afc:	90 e0       	ldi	r25, 0x00	; 0
      afe:	0e 94 12 04 	call	0x824	; 0x824 <identify_fingerprint>
      b02:	0d c0       	rjmp	.+26     	; 0xb1e <main+0x6a>
-			//play_game();
 			}else if((PINB & 0x02) == 0){
      b04:	b1 99       	sbic	0x16, 1	; 22
      b06:	03 c0       	rjmp	.+6      	; 0xb0e <main+0x5a>

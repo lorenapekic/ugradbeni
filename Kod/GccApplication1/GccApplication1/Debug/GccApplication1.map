@@ -50,11 +50,11 @@ Discarded input sections
  .bss           0x00000000        0x0 main.o
  .text.ledOff   0x00000000       0x14 main.o
  .text.muscle_sensor
-                0x00000000       0x1e main.o
+                0x00000000       0x2e main.o
  .text.init_adc
                 0x00000000        0xa main.o
  .text.play_game
-                0x00000000       0xf0 main.o
+                0x00000000      0x112 main.o
  .text          0x00000000        0x0 e:/program files/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 e:/program files/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 e:/program files/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -475,7 +475,7 @@ END GROUP
  *(.fini0)
                 0x0000110e                _etext = .
 
-.data           0x00800060      0x13a load address 0x0000110e
+.data           0x00800060      0x13e load address 0x0000110e
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -483,37 +483,37 @@ END GROUP
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800060      0x13a main.o
-                                0x144 (size before relaxing)
+                0x00800060      0x13e main.o
+                                0x148 (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x0080019a                . = ALIGN (0x2)
-                0x0080019a                _edata = .
-                0x0080019a                PROVIDE (__data_end, .)
+                0x0080019e                . = ALIGN (0x2)
+                0x0080019e                _edata = .
+                0x0080019e                PROVIDE (__data_end, .)
 
-.bss            0x0080019a      0x20a
-                0x0080019a                PROVIDE (__bss_start, .)
+.bss            0x0080019e      0x20a
+                0x0080019e                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.rcvBufferEnd
-                0x0080019a        0x2 main.o
-                0x0080019a                rcvBufferEnd
+                0x0080019e        0x2 main.o
+                0x0080019e                rcvBufferEnd
  .bss.rcvBufferStart
-                0x0080019c        0x2 main.o
-                0x0080019c                rcvBufferStart
+                0x008001a0        0x2 main.o
+                0x008001a0                rcvBufferStart
  *(COMMON)
- COMMON         0x0080019e      0x206 main.o
-                0x0080019e                rcvResponse
-                0x008001a0                rcvBuffer
-                0x008003a0                rcvParameter
-                0x008003a4                PROVIDE (__bss_end, .)
+ COMMON         0x008001a2      0x206 main.o
+                0x008001a2                rcvResponse
+                0x008001a4                rcvBuffer
+                0x008003a4                rcvParameter
+                0x008003a8                PROVIDE (__bss_end, .)
                 0x0000110e                __data_load_start = LOADADDR (.data)
-                0x00001248                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000124c                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008003a4        0x0
+.noinit         0x008003a8        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x008003a4                _end = .
+                0x008003a8                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -593,28 +593,28 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x20df
+.debug_info     0x00000000     0x2158
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x52e E:/Program Files/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega16a/avr5/crtatmega16a.o
  .debug_info    0x0000052e      0x5cb lcd.o
- .debug_info    0x00000af9     0x15e6 main.o
+ .debug_info    0x00000af9     0x165f main.o
 
-.debug_abbrev   0x00000000      0xa71
+.debug_abbrev   0x00000000      0xa62
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x4e7 E:/Program Files/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega16a/avr5/crtatmega16a.o
  .debug_abbrev  0x000004e7      0x229 lcd.o
- .debug_abbrev  0x00000710      0x361 main.o
+ .debug_abbrev  0x00000710      0x352 main.o
 
-.debug_line     0x00000000      0xdd3
+.debug_line     0x00000000      0xdf1
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x115 E:/Program Files/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega16a/avr5/crtatmega16a.o
  .debug_line    0x00000115      0x375 lcd.o
- .debug_line    0x0000048a      0x949 main.o
+ .debug_line    0x0000048a      0x967 main.o
 
-.debug_frame    0x00000000      0x33c
+.debug_frame    0x00000000      0x344
  *(.debug_frame)
  .debug_frame   0x00000000      0x140 lcd.o
- .debug_frame   0x00000140      0x1fc main.o
+ .debug_frame   0x00000140      0x204 main.o
 
 .debug_str      0x00000000      0x5f9
  *(.debug_str)
@@ -624,10 +624,10 @@ END GROUP
  .debug_str     0x000003ea      0x20f main.o
                                 0x371 (size before relaxing)
 
-.debug_loc      0x00000000      0xfc2
+.debug_loc      0x00000000      0xfcc
  *(.debug_loc)
  .debug_loc     0x00000000      0x538 lcd.o
- .debug_loc     0x00000538      0xa8a main.o
+ .debug_loc     0x00000538      0xa94 main.o
 
 .debug_macinfo
  *(.debug_macinfo)

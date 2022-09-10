@@ -146,7 +146,7 @@ int is_enrolled(int id){
 	sendCommand(0x0021, id);
 	receiveAck();
 	
-	if(rcvResponse == 0x0030){
+	if(rcvResponse == 0x0030 || rcvResponse == 0x30 || rcvResponse == 48){
 		return 1;
 	}else{
 		return 0;
@@ -175,11 +175,11 @@ int isFingerPressing(){
 void enroll(){
 	// find first free ID
 	int id;
-	for(id=0; id <= 2999; id++){
+	for(id=0; id <= 299; id++){
 		if(is_enrolled(id) == 0) break;
 	}
 	
-	if(id == 3000){
+	if(id == 300){
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
 		lcd_puts("Greska");
@@ -272,7 +272,7 @@ int identify_fingerprint(int noMsg){
 	sendCommand(0x0051, 1);     // Identify fingerprint
 	receiveAck();
 
-	if((noMsg == 0) && (rcvResponse != 48)){
+	if((noMsg == 0) && (rcvResponse == 0x31 || rcvResponse == 0x0031 || rcvResponse == 49)){
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
 		lcd_puts("Korisnik nije");
@@ -290,7 +290,7 @@ int identify_fingerprint(int noMsg){
 	
 	if(noMsg == 0) _delay_ms(3000);
 	
-	if(rcvResponse != 0x0030) return -1;
+	if(rcvResponse == 0x0031 || rcvResponse == 0x31 || rcvResponse == 49) return -1;
 	else return rcvParameter;
 }
 
@@ -324,7 +324,9 @@ void delete_user(){
 char muscle_sensor(){
 	ADCSRA |= (1 << ADSC);
 	while (!(ADCSRA & (1 << ADIF)));
-	_delay_ms(400);
+	lcd_gotoxy(0,1);
+	lcd_puts("...");
+	_delay_ms(1000);
 	return ADC;
 }
 
@@ -358,27 +360,29 @@ void play_game(){
 	lcd_clrscr();
 	lcd_puts("Igrac 1 id");
 	while (p1_id == -1) {
-		p1_id = identify_fingerprint(1);
+		p1_id = identify_fingerprint(0);
 	}
 	lcd_clrscr();
 	lcd_puts("Igrac 2 id");
 	while (p2_id == -1) {
-		p2_id = identify_fingerprint(1);
+		p2_id = identify_fingerprint(0);
 	}
 	lcd_clrscr();
 	lcd_puts("Igrac 1 igraj");
-	_delay_ms(3000);
+	_delay_ms(2000);
 	while(p1_score == 0){
 		p1_score = muscle_sensor();
 	}
 	
 	lcd_clrscr();
 	lcd_puts("Igrac 2 igraj");
+	_delay_ms(2000);
 	while(p2_score == 0){
 		p2_score = muscle_sensor();
 	}
 	_delay_ms(3000);
 	
+	lcd_clrscr();
 	if (p1_score > p2_score) {
 		lcd_puts("Igrac 1 pobjedio");
 		} else {
@@ -428,6 +432,7 @@ int main(void)
 	while(1){
 		if((PINB & 0x01) == 0){
 			play_game();
+			//identify_fingerprint(0);
 			}else if((PINB & 0x02) == 0){
 			enroll();
 			}else if((PINB & 0x04) == 0){
