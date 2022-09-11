@@ -414,7 +414,7 @@ int main(void)
 
 	TCCR1A = (1 << COM1B1) | (1 << WGM10);
 	TCCR1B = (1 << WGM12) | (1 << CS11);
-	OCR1B = 60;
+	OCR1B = 128;
 
 	lcd_init(LCD_DISP_ON);
 	lcd_clrscr();
