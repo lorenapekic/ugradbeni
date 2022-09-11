@@ -263,7 +263,7 @@ void enroll(){
 int identify_fingerprint(int noMsg){
 	lcd_clrscr();
 	lcd_gotoxy(0, 0);
-	lcd_puts("Prisloni prst");
+	lcd_puts("Prislonite prst");
 	while(isFingerPressing() == 0) _delay_ms(400);
 
 	sendCommand(0x0060, 1);     // Capture finger
@@ -351,7 +351,7 @@ void play_game(){
 	lcd_puts("Registriraj se");
 	lcd_gotoxy(0,1);
 	lcd_puts("da bi igrao");
-	_delay_ms(5000);
+	_delay_ms(3000);
 	
 	int p1_id = -1;
 	int p2_id = -1;
@@ -380,12 +380,12 @@ void play_game(){
 	while(p2_score == 0){
 		p2_score = muscle_sensor();
 	}
-	_delay_ms(3000);
+	_delay_ms(4000);
 	
 	lcd_clrscr();
 	if (p1_score > p2_score) {
 		lcd_puts("Igrac 1 pobjedio");
-		} else {
+	} else {
 		lcd_puts("Igrac 2 pobjedio");
 	}
 	_delay_ms(5000);
@@ -432,7 +432,6 @@ int main(void)
 	while(1){
 		if((PINB & 0x01) == 0){
 			play_game();
-			//identify_fingerprint(0);
 			}else if((PINB & 0x02) == 0){
 			enroll();
 			}else if((PINB & 0x04) == 0){
