@@ -324,10 +324,26 @@ void delete_user(){
 char muscle_sensor(){
 	ADCSRA |= (1 << ADSC);
 	while (!(ADCSRA & (1 << ADIF)));
-	lcd_gotoxy(0,1);
-	lcd_puts("...");
-	_delay_ms(1000);
 	return ADC;
+}
+
+int scan_muscle() {
+	uint8_t value = 0;
+	uint8_t new_value = 0;
+	for (int i = 0; i < 15; i++) {
+		new_value = muscle_sensor();
+		lcd_gotoxy(0,1);
+		lcd_clrscr();
+		char muscle_value[16];
+		sprintf(muscle_value, "%d", new_value);
+		lcd_puts(muscle_value);
+		if (new_value > value) {
+			value = new_value;
+		}
+		_delay_ms(600);
+	}
+	
+	return value;
 }
 
 void init_fingerprint_scanner(){
@@ -348,13 +364,13 @@ void play_game(){
 	lcd_clrscr();
 	init_adc();
 	lcd_gotoxy(0,0);
-	lcd_puts("Registriraj se");
+	lcd_puts("Prijavi se");
 	lcd_gotoxy(0,1);
 	lcd_puts("da bi igrao");
-	_delay_ms(3000);
+	_delay_ms(5000);
 	
-	int p1_id = -1;
-	int p2_id = -1;
+	uint32_t p1_id = -1;
+	uint32_t p2_id = -1;
 	int p1_score = 0;
 	int p2_score = 0;
 	lcd_clrscr();
@@ -367,26 +383,51 @@ void play_game(){
 	while (p2_id == -1) {
 		p2_id = identify_fingerprint(0);
 	}
-	lcd_clrscr();
-	lcd_puts("Igrac 1 igraj");
-	_delay_ms(2000);
+	
+	for (int i = 10; i>0; i--) {
+		lcd_clrscr();
+		char str[16];
+		sprintf(str, "%d s", i);
+		lcd_puts("Igrac 1 igraj!");
+		lcd_gotoxy(0, 1);
+		lcd_puts(str);
+		_delay_ms(1000);
+	}
+	
 	while(p1_score == 0){
-		p1_score = muscle_sensor();
+		p1_score = scan_muscle();
 	}
 	
 	lcd_clrscr();
-	lcd_puts("Igrac 2 igraj");
+	lcd_puts("Promjena igraca");
 	_delay_ms(2000);
-	while(p2_score == 0){
-		p2_score = muscle_sensor();
-	}
-	_delay_ms(4000);
 	
+	for (int i = 10; i>0; i--) {
+		lcd_clrscr();
+		char str[16];
+		sprintf(str, "%d s", i);
+		lcd_puts("Igrac 2 igraj!");
+		lcd_gotoxy(0, 1);
+		lcd_puts(str);
+		_delay_ms(1000);
+	}
+	
+	while(p2_score == 0){
+		p2_score = scan_muscle();
+	}
+	_delay_ms(1000);
+	char score[16];
 	lcd_clrscr();
 	if (p1_score > p2_score) {
 		lcd_puts("Igrac 1 pobjedio");
+		lcd_gotoxy(0,1);
+		sprintf(score,"s %d bodova", p1_score );
+		lcd_puts(score);
 	} else {
 		lcd_puts("Igrac 2 pobjedio");
+		lcd_gotoxy(0,1);
+		sprintf(score,"s %d bodova", p2_score );
+		lcd_puts(score);
 	}
 	_delay_ms(5000);
 	return;
@@ -414,7 +455,7 @@ int main(void)
 
 	TCCR1A = (1 << COM1B1) | (1 << WGM10);
 	TCCR1B = (1 << WGM12) | (1 << CS11);
-	OCR1B = 128;
+	OCR1B = 2048;
 
 	lcd_init(LCD_DISP_ON);
 	lcd_clrscr();
@@ -426,17 +467,18 @@ int main(void)
 	UCSRC = (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0);
 
 	sei();
-	init_fingerprint_scanner();
+
 	ledOn();
+	init_fingerprint_scanner();
 	
 	while(1){
 		if((PINB & 0x01) == 0){
 			play_game();
-			}else if((PINB & 0x02) == 0){
+		} else if((PINB & 0x02) == 0) {
 			enroll();
-			}else if((PINB & 0x04) == 0){
+		} else if((PINB & 0x04) == 0){
 			delete_user();
-			}else if((PINB & 0x08) == 0){
+		} else if((PINB & 0x08) == 0){
 			delete_all();
 		}
 		
